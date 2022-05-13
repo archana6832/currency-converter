@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CurrencyRow from './CurrencyRow';
+import Currency from './Currency';
 import './App.css';
 
 const BASE_URL = 'https://open.er-api.com/v6/latest';
@@ -16,15 +16,15 @@ function App() {
 
 
   let toAmount, fromAmount
+
   if (amountInFromCurrency) {
     fromAmount = amount
-    toAmount = amount * exchangeRate
+    toAmount = amount * exchangeRate || 0
   }
   else {
     toAmount = amount
     fromAmount = amount / exchangeRate
   }
-
 
 
   useEffect(() => {
@@ -45,7 +45,10 @@ function App() {
         .then(res => res.json())
         .then(data => setExchangeRate(data.rates[toCurrency]))
     }
+
   }, [fromCurrency, toCurrency]);
+
+
 
   function handleFromAmountChange(e) {
     setAmount(e.target.value)
@@ -61,7 +64,9 @@ function App() {
     <div className="App">
       <div className="heading">
         <h1>Currency converter</h1>
-        <CurrencyRow
+
+        <div className="exchange">Exchange Rate = {exchangeRate}</div>
+        <Currency
           currencyOptions={currencyOptions}
           selectedCurrency={fromCurrency}
           onChangeCurrency={e => setFromCurrency(e.target.value)}
@@ -69,12 +74,9 @@ function App() {
           amount={fromAmount}
         />
 
-        <div >
-          =
-        </div>
 
 
-        <CurrencyRow
+        <Currency
           currencyOptions={currencyOptions}
           selectedCurrency={toCurrency}
           onChangeCurrency={e => setToCurrency(e.target.value)}
@@ -83,7 +85,7 @@ function App() {
         />
 
       </div>
-    </div>
+    </div >
   );
 }
 
